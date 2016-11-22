@@ -5,6 +5,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.security.MessageDigest;
+import java.util.Scanner;
 import java.util.UUID;
 
 /**
@@ -12,9 +13,10 @@ import java.util.UUID;
  */
 public class Proxy implements ProxyInterface{
 
-    private static UUID proxyID = UUID.randomUUID();
+    private int proxyID;
 
-    public Proxy() throws RemoteException {
+    public Proxy(int id) throws RemoteException {
+        proxyID = id;
         System.out.println("Proxy "+ proxyID +" Initialized");
     }
 
@@ -48,15 +50,17 @@ public class Proxy implements ProxyInterface{
     }
 
     public static void main(String[] args) {
+        System.out.println("Digite o numero do proxy: ");
+        Scanner in = new Scanner(System.in);
         try{
-            Proxy proxy = new Proxy();
+            Proxy proxy = new Proxy(in.nextInt());
             ProxyInterface stub = (ProxyInterface) UnicastRemoteObject.exportObject(proxy,0);
 
             //Binding
             Registry registry = LocateRegistry.getRegistry();
-            registry.rebind("ProxyInterface", stub);
+            registry.rebind("ProxyInterface "+proxy.proxyID, stub);
 
-            System.out.println("Proxy ready\n\nLog:\n");
+            System.out.println("Proxy ready "+proxy.proxyID+" \n\nLog:\n");
         }catch (Exception e){
             System.out.println("Error: " + e.toString());
             e.printStackTrace();
