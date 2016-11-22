@@ -1,3 +1,6 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -18,14 +21,9 @@ public class Storage implements StorageInterface {
     }
 
     @Override
-    public String createResource(String filename) throws RemoteException {
-        // criar o arquivo solicitado
-        return null;
-    }
+    public String createFile(String filename) throws RemoteException, FileNotFoundException {
 
-    @Override
-    public String requestResource(String filename) throws RemoteException {
-        // retornar a string com o nome do arquivo apos pesquisar na pasta
+        File file = new File("storageNodes/no"+id+"/"+filename);
         return null;
     }
 

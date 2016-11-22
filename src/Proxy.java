@@ -1,3 +1,5 @@
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.math.BigInteger;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -5,8 +7,11 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.security.MessageDigest;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 /**
  * Created by leolinhares on 21/11/16.
@@ -14,6 +19,7 @@ import java.util.UUID;
 public class Proxy implements ProxyInterface{
 
     private int proxyID;
+    private static Map<Integer, int[]> map = new HashMap<>();
 
     public Proxy(int id) throws RemoteException {
         proxyID = id;
@@ -21,23 +27,39 @@ public class Proxy implements ProxyInterface{
     }
 
     @Override
-    public String createResource(String filename, int id) {
-        try {
+    public String createFile(String filename) throws Exception {
+        int partition = hash(filename).intValue();
+        System.out.println(partition);
+        int[] storageNodes = map.get(partition);
+
+        Registry registry = LocateRegistry.getRegistry(null);
+
+        for (int node: storageNodes) {
+            System.out.println(node);
             // Establish connection with the storage nodes
-            Registry registry = LocateRegistry.getRegistry(null);
-            StorageInterface stub = (StorageInterface) registry.lookup("StorageInterface"+id);
-            stub.createResource(filename);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        } catch (NotBoundException e) {
-            e.printStackTrace();
+            StorageInterface storageStub = (StorageInterface) registry.lookup("StorageInterface"+node);
+            storageStub.createFile(filename);
         }
-            return null;
+        return null;
     }
 
     @Override
-    public String requestResource(String filename, int id) {
+    public String readFile(String filename) {
+
         return null;
+    }
+
+
+    public static void load() throws FileNotFoundException {
+        Scanner in = new Scanner(new FileReader("src/br/com/leolinhares/replica.txt"));
+        int i = 0;
+        while(in.hasNextLine()){
+            String[] fields = in.nextLine().split(",");
+            int [] replicas = Stream.of(fields).mapToInt(Integer::parseInt).toArray();
+            map.put(i, replicas);
+            i++;
+        }
+        in.close();
     }
 
     public static BigInteger hash(String filename) throws Exception{
@@ -58,7 +80,7 @@ public class Proxy implements ProxyInterface{
 
             //Binding
             Registry registry = LocateRegistry.getRegistry();
-            registry.rebind("ProxyInterface "+proxy.proxyID, stub);
+            registry.rebind("ProxyInterface"+proxy.proxyID, stub);
 
             System.out.println("Proxy ready "+proxy.proxyID+" \n\nLog:\n");
         }catch (Exception e){

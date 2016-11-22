@@ -6,7 +6,7 @@ import java.rmi.RemoteException;
  */
 public interface ProxyInterface extends Remote{
 
-    String createResource(String filename, int id) throws RemoteException;
-    String requestResource(String filename, int id) throws RemoteException;
+    String createFile(String filename) throws Exception;
+    String readFile(String filename) throws RemoteException;
 
 }

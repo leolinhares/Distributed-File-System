@@ -3,7 +3,6 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.Scanner;
 
 /**
  * Created by leolinhares on 21/11/16.
@@ -11,24 +10,18 @@ import java.util.Scanner;
 public class LoadBalancer implements LoadBalancerInterface{
 
     @Override
-    public String createFile(String filename) {
+    public String getProxy() {
+        int proxyID = 0;
         try {
             // Establish connection with the storage nodes
             Registry registry = LocateRegistry.getRegistry(null);
-            int proxyID = 0;
-            ProxyInterface stub = (ProxyInterface) registry.lookup("ProxyInterface"+proxyID);
-            stub.createResource(filename, proxyID);
+            registry.lookup("ProxyInterface"+proxyID);
         } catch (RemoteException e) {
             e.printStackTrace();
         } catch (NotBoundException e) {
             e.printStackTrace();
         }
-        return null;
-    }
-
-    @Override
-    public String readFile(String filename) {
-        return null;
+        return Integer.toString(proxyID);
     }
 
     public static void main(String[] args) {

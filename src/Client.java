@@ -8,11 +8,13 @@ import java.util.Scanner;
  * Created by leolinhares on 21/11/16.
  */
 public class Client {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         try {
             // Establish connection with the Load Balancer
             Registry registry = LocateRegistry.getRegistry(null);
-            LoadBalancerInterface stub = (LoadBalancerInterface) registry.lookup("LoadBalancer");
+            LoadBalancerInterface lbstub = (LoadBalancerInterface) registry.lookup("LoadBalancer");
+            int proxyID = Integer.parseInt(lbstub.getProxy());
+            ProxyInterface proxyStub = (ProxyInterface) registry.lookup("ProxyInterface"+proxyID);
 
             do{
                 int option;
@@ -29,12 +31,11 @@ public class Client {
                 if (option == 1){
                     System.out.println("\nFilename: \n");
                     Scanner in = new Scanner(System.in);
-                    stub.createFile(in.nextLine());
-
+                    proxyStub.createFile(in.nextLine());
                 }else if (option == 2){
                     System.out.println("\nFilename: \n");
                     Scanner in = new Scanner(System.in);
-                    stub.readFile(in.nextLine());
+                    proxyStub.readFile(in.nextLine());
                 }else{
                     break;
                 }
