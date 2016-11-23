@@ -1,7 +1,4 @@
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -26,7 +23,7 @@ public class Storage implements StorageInterface {
     }
 
     @Override
-    public String createFile(String filename) {
+    public String createFile(String filename, String contents) {
 
         File file = new File("storageNodes/no"+id+"/"+filename);
         try {
@@ -34,6 +31,25 @@ public class Storage implements StorageInterface {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        try {
+            FileWriter fileWriter =
+                    new FileWriter("storageNodes/no"+id+"/"+filename);
+
+            BufferedWriter bufferedWriter =
+                    new BufferedWriter(fileWriter);
+
+            bufferedWriter.write(contents);
+
+            bufferedWriter.close();
+        }
+        catch(IOException ex) {
+            System.out.println(
+                    "Error writing to file '"
+                            + filename + "'");
+             ex.printStackTrace();
+        }
+
         return "File created";
     }
 

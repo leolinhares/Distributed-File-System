@@ -7,7 +7,7 @@ import java.rmi.RemoteException;
  */
 public interface ProxyInterface extends Remote{
 
-    String createFile(String filename) throws RemoteException, NotBoundException;
+    String createFile(String filename, String contents) throws RemoteException, NotBoundException;
     String readFile(String filename) throws RemoteException;
 
 }

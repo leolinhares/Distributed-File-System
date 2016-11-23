@@ -26,7 +26,7 @@ public class Proxy implements ProxyInterface{
     }
 
     @Override
-    public String createFile(String filename){
+    public String createFile(String filename, String contents){
         int partition = 0;
 
         try {
@@ -35,20 +35,17 @@ public class Proxy implements ProxyInterface{
             e.printStackTrace();
         }
 
-        System.out.println(partition);
+        System.out.println("Partition " + partition);
         int[] storageNodes = map.get(partition);
 
         try{
         Registry registry = LocateRegistry.getRegistry(null);
             for (int node: storageNodes) {
-                System.out.println(node);
                 // Establish connection with the storage nodes
                 StorageInterface storageStub = (StorageInterface) registry.lookup("StorageInterface" + node);
-                storageStub.createFile(filename);
+                storageStub.createFile(filename, contents);
             }
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        } catch (NotBoundException e) {
+        } catch (RemoteException | NotBoundException e) {
             e.printStackTrace();
         }
         return null;
@@ -78,8 +75,6 @@ public class Proxy implements ProxyInterface{
         m.update(filename.getBytes(), 0, filename.length());
         BigInteger b = new BigInteger(1,m.digest());
         return b.mod(new BigInteger("3"));
-//        System.out.println(b.mod(new BigInteger("3"))); // ID da partição
-//        System.out.println("MD5: " + b.toString(16)); // Hash
     }
 
     public static void main(String[] args) throws FileNotFoundException {

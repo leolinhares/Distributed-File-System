@@ -13,6 +13,8 @@ public class Client {
             // Establish connection with the Load Balancer
             Registry registry = LocateRegistry.getRegistry(null);
             LoadBalancerInterface lbstub = (LoadBalancerInterface) registry.lookup("LoadBalancer");
+
+            // Get the proxy number from the Load Balancer and establish proxy connection
             int proxyID = Integer.parseInt(lbstub.getProxy());
             ProxyInterface proxyStub = (ProxyInterface) registry.lookup("ProxyInterface"+proxyID);
 
@@ -29,13 +31,17 @@ public class Client {
                 option = input_exit.nextInt();
 
                 if (option == 1){
-                    System.out.println("\nFilename: \n");
                     Scanner in = new Scanner(System.in);
-                    proxyStub.createFile(in.nextLine());
+
+                    System.out.println("\nEnter filename and the file contents: \n");
+                    String filename = in.nextLine();
+                    String contents = in.nextLine();
+                    proxyStub.createFile(filename, contents);
+
                 }else if (option == 2){
-                    System.out.println("\nFilename: \n");
-                    Scanner in = new Scanner(System.in);
-                    proxyStub.readFile(in.nextLine());
+//                    System.out.println("\nFilename: \n");
+//                    Scanner in = new Scanner(System.in);
+//                    System.out.println(proxyStub.readFile(in.nextLine()));
                 }else{
                     break;
                 }
