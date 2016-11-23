@@ -1,6 +1,5 @@
 *.class
 Test.java
-src/storageNodes
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
