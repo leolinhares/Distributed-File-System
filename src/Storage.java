@@ -26,10 +26,14 @@ public class Storage implements StorageInterface {
     }
 
     @Override
-    public String createFile(String filename) throws IOException {
+    public String createFile(String filename) {
 
         File file = new File("storageNodes/no"+id+"/"+filename);
-        file.createNewFile();
+        try {
+            file.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return "File created";
     }
 
@@ -37,7 +41,6 @@ public class Storage implements StorageInterface {
     public String readFile(String filename) {
         return null;
     }
-
 
     public static void main(String[] args) {
         System.out.println("Storage number: ");

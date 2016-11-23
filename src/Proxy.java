@@ -10,7 +10,6 @@ import java.security.MessageDigest;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.UUID;
 import java.util.stream.Stream;
 
 /**
@@ -27,18 +26,30 @@ public class Proxy implements ProxyInterface{
     }
 
     @Override
-    public String createFile(String filename) throws Exception {
-        int partition = hash(filename).intValue();
+    public String createFile(String filename){
+        int partition = 0;
+
+        try {
+            partition = hash(filename).intValue();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         System.out.println(partition);
         int[] storageNodes = map.get(partition);
 
+        try{
         Registry registry = LocateRegistry.getRegistry(null);
-
-        for (int node: storageNodes) {
-            System.out.println(node);
-            // Establish connection with the storage nodes
-            StorageInterface storageStub = (StorageInterface) registry.lookup("StorageInterface"+node);
-            storageStub.createFile(filename);
+            for (int node: storageNodes) {
+                System.out.println(node);
+                // Establish connection with the storage nodes
+                StorageInterface storageStub = (StorageInterface) registry.lookup("StorageInterface" + node);
+                storageStub.createFile(filename);
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        } catch (NotBoundException e) {
+            e.printStackTrace();
         }
         return null;
     }
@@ -51,7 +62,7 @@ public class Proxy implements ProxyInterface{
 
 
     public static void load() throws FileNotFoundException {
-        Scanner in = new Scanner(new FileReader("src/br/com/leolinhares/replica.txt"));
+        Scanner in = new Scanner(new FileReader("replica.txt"));
         int i = 0;
         while(in.hasNextLine()){
             String[] fields = in.nextLine().split(",");
@@ -71,7 +82,8 @@ public class Proxy implements ProxyInterface{
 //        System.out.println("MD5: " + b.toString(16)); // Hash
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException {
+        load();
         System.out.println("Digite o numero do proxy: ");
         Scanner in = new Scanner(System.in);
         try{
