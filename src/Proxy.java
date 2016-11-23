@@ -28,6 +28,7 @@ public class Proxy implements ProxyInterface{
     @Override
     public String createFile(String filename, String contents){
         int partition = 0;
+        String result = null;
 
         try {
             partition = hash(filename).intValue();
@@ -43,17 +44,18 @@ public class Proxy implements ProxyInterface{
             for (int node: storageNodes) {
                 // Establish connection with the storage nodes
                 StorageInterface storageStub = (StorageInterface) registry.lookup("StorageInterface" + node);
-                storageStub.createFile(filename, contents);
+                result = storageStub.createFile(filename, contents);
             }
         } catch (RemoteException | NotBoundException e) {
             e.printStackTrace();
         }
-        return null;
+        return result;
     }
 
     @Override
     public String readFile(String filename) {
         int partition = 0;
+        String result = null;
 
         try {
             partition = hash(filename).intValue();
@@ -69,13 +71,13 @@ public class Proxy implements ProxyInterface{
             for (int node: storageNodes) {
                 // Establish connection with the storage nodes
                 StorageInterface storageStub = (StorageInterface) registry.lookup("StorageInterface" + node);
-                storageStub.readFile(filename);
+                result = storageStub.readFile(filename);
                 break;
             }
         } catch (RemoteException | NotBoundException e) {
             e.printStackTrace();
         }
-        return null;
+        return result;
     }
 
 

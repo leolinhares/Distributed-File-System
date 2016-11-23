@@ -36,12 +36,12 @@ public class Client {
                     System.out.println("\nEnter filename and the file contents: \n");
                     String filename = in.nextLine();
                     String contents = in.nextLine();
-                    proxyStub.createFile(filename, contents);
+                    System.out.println(proxyStub.createFile(filename, contents));
 
                 }else if (option == 2){
                     System.out.println("\nFilename: \n");
                     Scanner in = new Scanner(System.in);
-                    proxyStub.readFile(in.nextLine());
+                    System.out.println(proxyStub.readFile(in.nextLine()));
                 }else{
                     break;
                 }
