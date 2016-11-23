@@ -42,11 +42,15 @@ public class Proxy implements ProxyInterface{
         try{
         Registry registry = LocateRegistry.getRegistry(null);
             for (int node: storageNodes) {
-                // Establish connection with the storage nodes
-                StorageInterface storageStub = (StorageInterface) registry.lookup("StorageInterface" + node);
-                result = storageStub.createFile(filename, contents);
+                try{
+                    // Establish connection with the storage nodes
+                    StorageInterface storageStub = (StorageInterface) registry.lookup("StorageInterface" + node);
+                    result = storageStub.createFile(filename, contents);
+                }catch (RemoteException | NotBoundException e){
+                    e.printStackTrace();
+                }
             }
-        } catch (RemoteException | NotBoundException e) {
+        } catch (RemoteException e) {
             e.printStackTrace();
         }
         return result;
