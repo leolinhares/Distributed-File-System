@@ -70,11 +70,15 @@ public class Proxy implements ProxyInterface{
             Registry registry = LocateRegistry.getRegistry(null);
             for (int node: storageNodes) {
                 // Establish connection with the storage nodes
-                StorageInterface storageStub = (StorageInterface) registry.lookup("StorageInterface" + node);
-                result = storageStub.readFile(filename);
-                break;
+                try {
+                    StorageInterface storageStub = (StorageInterface) registry.lookup("StorageInterface" + node);
+                    result = storageStub.readFile(filename);
+                }catch ( RemoteException | NotBoundException e){
+                    e.printStackTrace();
+                    result = "Could not complete the operation";
+                }
             }
-        } catch (RemoteException | NotBoundException e) {
+        } catch (RemoteException e) {
             e.printStackTrace();
         }
         return result;
