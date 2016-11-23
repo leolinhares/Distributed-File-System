@@ -55,6 +55,14 @@ public class Storage implements StorageInterface {
 
     @Override
     public String readFile(String filename) {
+        try (BufferedReader br = new BufferedReader(new FileReader("storageNodes/no"+id+"/"+filename))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                System.out.println(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 

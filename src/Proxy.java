@@ -53,7 +53,28 @@ public class Proxy implements ProxyInterface{
 
     @Override
     public String readFile(String filename) {
+        int partition = 0;
 
+        try {
+            partition = hash(filename).intValue();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("Partition " + partition);
+        int[] storageNodes = map.get(partition);
+
+        try{
+            Registry registry = LocateRegistry.getRegistry(null);
+            for (int node: storageNodes) {
+                // Establish connection with the storage nodes
+                StorageInterface storageStub = (StorageInterface) registry.lookup("StorageInterface" + node);
+                storageStub.readFile(filename);
+                break;
+            }
+        } catch (RemoteException | NotBoundException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 

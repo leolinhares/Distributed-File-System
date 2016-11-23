@@ -39,9 +39,9 @@ public class Client {
                     proxyStub.createFile(filename, contents);
 
                 }else if (option == 2){
-//                    System.out.println("\nFilename: \n");
-//                    Scanner in = new Scanner(System.in);
-//                    System.out.println(proxyStub.readFile(in.nextLine()));
+                    System.out.println("\nFilename: \n");
+                    Scanner in = new Scanner(System.in);
+                    proxyStub.readFile(in.nextLine());
                 }else{
                     break;
                 }
