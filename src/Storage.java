@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -15,20 +16,31 @@ public class Storage implements StorageInterface {
 
     private int id;
 
+    public int getId() {
+        return id;
+    }
+
     public Storage(int id) throws RemoteException {
         this.id = id;
         System.out.println("Storage " + id + " Initialized");
     }
 
     @Override
-    public String createFile(String filename) throws RemoteException, FileNotFoundException {
+    public String createFile(String filename) throws IOException {
 
         File file = new File("storageNodes/no"+id+"/"+filename);
+        file.createNewFile();
+        return "File created";
+    }
+
+    @Override
+    public String readFile(String filename) {
         return null;
     }
 
+
     public static void main(String[] args) {
-        System.out.println("Digite o numero do storage: ");
+        System.out.println("Storage number: ");
         Scanner in = new Scanner(System.in);
         try {
             Storage storage = new Storage(in.nextInt());
@@ -45,7 +57,4 @@ public class Storage implements StorageInterface {
         }
     }
 
-    public int getId() {
-        return id;
-    }
 }
