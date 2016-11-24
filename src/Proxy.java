@@ -88,6 +88,11 @@ public class Proxy implements ProxyInterface{
         return result;
     }
 
+    @Override
+    public String test() throws RemoteException {
+        return null;
+    }
+
 
     public static void load() throws FileNotFoundException {
         Scanner in = new Scanner(new FileReader("replica.txt"));

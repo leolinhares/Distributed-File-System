@@ -12,14 +12,18 @@ public class LoadBalancer implements LoadBalancerInterface{
     @Override
     public String getProxy() {
         int proxyID = 0;
-        try {
-            // Establish connection with the storage nodes
-            Registry registry = LocateRegistry.getRegistry(null);
-            registry.lookup("ProxyInterface"+proxyID);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        } catch (NotBoundException e) {
-            e.printStackTrace();
+
+        for (int i = 0; i < 2; i++){
+            try {
+                proxyID = i;
+                // Establish connection with the storage nodes
+                Registry registry = LocateRegistry.getRegistry(null);
+                ProxyInterface stub = (ProxyInterface) registry.lookup("ProxyInterface"+proxyID);
+                String value = stub.test();
+                break;
+            } catch (RemoteException | NotBoundException e) {
+                e.printStackTrace();
+            }
         }
         return Integer.toString(proxyID);
     }

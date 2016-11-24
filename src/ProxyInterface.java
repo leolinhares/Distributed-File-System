@@ -9,5 +9,6 @@ public interface ProxyInterface extends Remote{
 
     String createFile(String filename, String contents) throws RemoteException, NotBoundException;
     String readFile(String filename) throws RemoteException;
+    String test() throws RemoteException;
 
 }
